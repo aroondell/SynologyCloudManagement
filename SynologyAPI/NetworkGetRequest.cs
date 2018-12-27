@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace SynologyAPI
 {
-    public class NetworkRequest
+    public class NetworkGetRequest
     {
         Uri Uri;
         bool ResponseStatus;
 
-        public NetworkRequest(Uri uri)
+        public NetworkGetRequest(Uri uri)
         {
             Uri = uri;
         }

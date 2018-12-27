@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Collections.Specialized;
 
 namespace SynologyAPI
 {
@@ -22,6 +23,12 @@ namespace SynologyAPI
             HostPort = Int32.Parse(ConfigurationManager.AppSettings["hostPort"]);
         }
 
+        public void CreateStandardConnectivityTest()
+        {
+            Path = "webapi/query.cgi";
+            ConstructUriWithPathOnly();
+        }
+
         public void ConstructUriWithPathOnly()
         {
             UriBuilder uriBuilder = InitiateBuilder();
@@ -36,18 +43,23 @@ namespace SynologyAPI
         public void CreateGeneralInfoQuery()
         {
             Path = ConfigurationManager.AppSettings["generalInfo"].ToString();
-            BuildParameters("SYNO.API.Info", "1", "query", "all");
-            ConstructUriWithQuery();
+            NameValueCollection collection = new NameValueCollection();
+            collection["query"] = "all";
+            BuildQueryWithParameters("SYNO.API.Info", "1", "query", collection);        
         }
 
-        private void BuildParameters(string api, string version, string method, string query)
+        public void BuildQueryWithParameters(string api, string version, string method, NameValueCollection nameValues)
         {
-            var parameters = HttpUtility.ParseQueryString(string.Empty);
-            parameters["api"] = api;
-            parameters["version"] = version;
-            parameters["method"] = method;
-            parameters["query"] = query;
-            Parameters = parameters.ToString();
+            var collection = HttpUtility.ParseQueryString(String.Empty);
+            collection["api"] = api;
+            collection["version"] = version;
+            collection["method"] = method;
+            foreach(string key in nameValues)
+            {
+                collection[key] = nameValues[key];
+            }
+            Parameters = collection.ToString();
+            ConstructUriWithQuery();
         }
 
         public Uri GetUri()

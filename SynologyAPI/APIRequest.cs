@@ -8,17 +8,26 @@ namespace SynologyAPI
 {
     public class APIRequest
     {
-        private Query Connection;
+        private Query Query;
+        private NetworkGetRequest NetworkRequest;
         private FileStationAPI FileStationRequest;
 
         public APIRequest()
         {
-            Connection = new Query();
+            Query = new Query();
         }
 
         public void GetGeneralInformation()
         {
-            Connection.CreateGeneralInfoQuery();
+            Query.CreateGeneralInfoQuery();
+        }
+
+        public bool ConfirmConnectivity()
+        {
+            Query.CreateStandardConnectivityTest();
+            NetworkRequest = new NetworkGetRequest(Query.GetUri());
+            NetworkRequest.SendGetRequest();
+            return NetworkRequest.GetResponseStatusCode();
         }
     }
 }

@@ -10,10 +10,33 @@ namespace SynologyAPI
 {
     public class APIResult
     {
-        APINetworkResponse NetworkResponse;
-        public APINetworkResponse RetrieveResultsOfNetworkResponse(string response)
+        public static APIGeneralInfoNetworkResponse RetrieveResultsOfGeneralInfoNetworkResponse(string response)
         {
-            NetworkResponse = JsonConvert.DeserializeObject<APINetworkResponse>(response);
+            APIGeneralInfoNetworkResponse NetworkResponse = JsonConvert.DeserializeObject<APIGeneralInfoNetworkResponse>(response);
+            return NetworkResponse;
+        }
+
+        public static AuthenticationAPINetworkResponse RetrieveResultsOfBasicAPINetworkResponse(string response)
+        {
+            AuthenticationAPINetworkResponse NetworkResponse = JsonConvert.DeserializeObject<AuthenticationAPINetworkResponse>(response);
+            return NetworkResponse;
+        }
+
+        public static APITopLevelSharedFoldersNetworkResponse RetrieveResultsOfSharedFoldersInfoNetworkResponse(string response)
+        {
+            APITopLevelSharedFoldersNetworkResponse NetworkResponse = JsonConvert.DeserializeObject<APITopLevelSharedFoldersNetworkResponse>(response);
+            return NetworkResponse;
+        }
+
+        public static StartFolderSearchResponse RetrieveResultsOfStartFolderNetworkResponse(string response)
+        {
+            StartFolderSearchResponse NetworkResponse = JsonConvert.DeserializeObject<StartFolderSearchResponse>(response);
+            return NetworkResponse;
+        }
+
+        public static APIFileLevelSharedFoldersNetworkResponse RetrieveResultsOfFileLevelListNetworkResponse(string response)
+        {
+            APIFileLevelSharedFoldersNetworkResponse NetworkResponse = JsonConvert.DeserializeObject<APIFileLevelSharedFoldersNetworkResponse>(response);
             return NetworkResponse;
         }
     }
