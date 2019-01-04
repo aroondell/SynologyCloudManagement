@@ -22,15 +22,16 @@ namespace SynologyWindows
 
         private void MergeRecordingsAndUploadFile(string dateString)
         {
-            AudioManipulator audio = new AudioManipulator();
+            USBStorage storage = new USBStorage();
             DateTime date = Convert.ToDateTime(dateString);
-            string fileName = audio.MergeVoiceRecordingsAndReturnNewFilePath(date);
+            string fileName = storage.MergeVoiceRecordingsAndReturnNewFilePath(date);
             SynoFTPClient client = SynoFTPClient.GetSynoFtpClient();
             client.LoginSecurely();
             string mainFolderName = ConfigurationManager.AppSettings["MainFolderName"].ToString();
             SynoFTPFolder folder = new SynoFTPFolder("/" + mainFolderName);
             folder.UploadFile(fileName);
             client.Logoff();
+            storage.DeleteFile(fileName);
         }
     }
 }

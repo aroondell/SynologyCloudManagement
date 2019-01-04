@@ -29,6 +29,13 @@ namespace LocalStorageManager
             return files;
         }
 
+        public string MergeVoiceRecordingsAndReturnNewFilePath(DateTime date)
+        {
+            AudioManipulator manipulator = new AudioManipulator();
+            string fileName = manipulator.MergeVoiceRecordingsAndReturnNewFilePath(date);
+            return fileName;
+        }
+
         public List<UsbFileSummary> GetVoiceRecordsFromStorage()
         {
             FileInfo[] recordFiles = GetAllFilesInRecordFolder();
@@ -50,6 +57,11 @@ namespace LocalStorageManager
             UsbFileSummary summary = new UsbFileSummary();
             List<UsbFileSummary> fileSummaries = SavedRecordings.Select(a => summary.CreateSummaryFromFileList(a.Key, a.Value)).ToList();
             return fileSummaries;
+        }
+
+        public void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
         }
     }
 }

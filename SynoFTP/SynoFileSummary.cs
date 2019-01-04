@@ -12,8 +12,7 @@ namespace SynologyFTP
         public string ColumnOne { get; set; }
         public string ColumnTwo { get; set; }
         public string ColumnThree { get; set; }
-
-        public string ColumnFour = "Get Transcript";
+        public string ColumnFour { get; set; }
         public string ColumnFive { get; set; }
         public string Created { get; set; }
 
@@ -26,6 +25,7 @@ namespace SynologyFTP
             ColumnFive = GetType(item.Name);
             Created = item.Created.ToString("dddd, dd MMMM yyyy");
             ColumnTwo = item.Modified.ToString("dddd, dd MMMM yyyy");
+            ColumnFour = "Download";
         }
 
         private string GetType(string name)

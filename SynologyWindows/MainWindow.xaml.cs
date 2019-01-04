@@ -43,7 +43,7 @@ namespace SynologyWindows
                 Title1 = "Date",
                 Title2 = "Recordings",
                 Title3 = "Size",
-                Title4 = "Upload"
+                Title4 = ""
             };
             List<MainListTitleStruct> titles = new List<MainListTitleStruct>
             {
@@ -62,7 +62,7 @@ namespace SynologyWindows
                 Title1 = "Name",
                 Title2 = "Modified",
                 Title3 = "Size",
-                Title4 = "Transcript"
+                Title4 = ""
             };
             List<MainListTitleStruct> titles = new List<MainListTitleStruct>
             {
