@@ -14,10 +14,10 @@ namespace SynologyFTP
         List<FtpListItem> FolderContents;
         FtpClient Client;
 
-        public SynoFTPFolder(SynoFTPClient client, string folderPath)
+        public SynoFTPFolder(string folderPath)
         {
             FolderPath = folderPath;
-            Client = client.GetFtpClient();
+            Client = SynoFTPClient.GetSynoFtpClient().GetFtpClient();
             RetrieveFolderContents();
         }
 

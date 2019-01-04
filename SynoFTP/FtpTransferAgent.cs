@@ -10,23 +10,23 @@ namespace SynologyFTP
     public abstract class FtpTransferAgent
     {
         protected SynoFTPClient SynoClient;
-        protected string FolderPath;
-        protected string FilePath;
+        protected string TargetPath;
+        protected string SourcePath;
 
-        public FtpTransferAgent(string folderPath, string filePath)
+        public FtpTransferAgent(string targetPath, string sourcePath)
         {
             SynoClient = SynoFTPClient.GetSynoFtpClient();
-            FolderPath = folderPath;
-            FilePath = filePath;
+            TargetPath = targetPath;
+            SourcePath = sourcePath;
         }
 
         public abstract void TransferFile();
         protected string GetNewFileName()
         {
-            string[] filePathParts = FilePath.Split('/');
+            string[] filePathParts = SourcePath.Split('/');
             string fileName = filePathParts[filePathParts.Length - 1];
-            string remoteFile = FolderPath + "/" + fileName;
-            return remoteFile;
+            string targetFile = TargetPath + "/" + fileName;
+            return targetFile;
         }
 
         protected Progress<double> progress = new Progress<double>(x =>

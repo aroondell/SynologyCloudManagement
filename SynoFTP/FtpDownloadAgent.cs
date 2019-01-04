@@ -7,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace SynologyFTP
 {
-    public class FtpUploadAgent : FtpTransferAgent
+    class FtpDownloadAgent : FtpTransferAgent
     {
 
-        public FtpUploadAgent(string TargetPath, string SourcePath) : base(TargetPath, SourcePath)
+        public FtpDownloadAgent(string TargetPath, string SourcePath) : base(TargetPath, SourcePath)
         {
-
         }
 
         public override void TransferFile()
         {
             FtpClient Client = SynoClient.GetFtpClient();
             string remoteFile = GetNewFileName();
-            Client.UploadFile(SourcePath, remoteFile, FtpExists.Overwrite, false, FtpVerify.None, progress);
+            Client.DownloadFile(SourcePath, remoteFile, false, FtpVerify.None, progress);
         }
     }
 }

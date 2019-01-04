@@ -12,8 +12,9 @@ namespace SynologyFTP
     public class SynoFTPClient
     {
         FtpClient Client;
-        public static SynoFTPClient Instance;
+        private static SynoFTPClient Instance;
         private FTPAuthentication Authentication;
+        private SynoFTPFolder TargetFolder;
         private SynoFTPClient()
         {
             string FTPUrl = ConfigurationManager.AppSettings["FTPUrl"].ToString();
@@ -43,6 +44,23 @@ namespace SynologyFTP
         public void Logoff()
         {
             Client.Disconnect();
+        }
+
+        public List<SynoFileSummary> GetFilesFromFolder()
+        {
+            if (TargetFolder == null)
+            {
+                return null;
+            }
+            List<FtpListItem> ftpItems = TargetFolder.RetrieveFilesFromFolder();
+            List<SynoFileSummary> fileSummaries = ftpItems.Select(a => new SynoFileSummary(a)).ToList();
+            return fileSummaries;
+        }
+
+        public void LoadTargetFolder(string TargetFolderName)
+        {
+            string folderPath = "/" + TargetFolderName;
+            TargetFolder = new SynoFTPFolder(folderPath);
         }
 
         public FtpClient GetFtpClient()
