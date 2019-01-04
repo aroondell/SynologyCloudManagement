@@ -11,12 +11,24 @@ namespace SynologyWindows
 {
     public class DynamicButton
     {
+        readonly string mainFolderName = ConfigurationManager.AppSettings["MainFolderName"].ToString();
+        SynoFTPFolder folder;
+        SynoFTPClient client;
+
         public DynamicButton(string TagValue)
         {
-            string[] commandParts = TagValue.Split('-');
+            folder = new SynoFTPFolder("/" + mainFolderName);
+            client = SynoFTPClient.GetSynoFtpClient();
+            client.LoginSecurely();
+            string[] stringSeparators = new string[] { "--" };
+            string[] commandParts = TagValue.Split(stringSeparators, StringSplitOptions.None);
             if (commandParts[0] == "UploadRecording")
             {
                 MergeRecordingsAndUploadFile(commandParts[1]);
+            }
+            else if (commandParts[0] == "DownloadFile")
+            {
+                DownloadFileToSavePath(commandParts[1]);
             }
         }
 
@@ -25,13 +37,15 @@ namespace SynologyWindows
             USBStorage storage = new USBStorage();
             DateTime date = Convert.ToDateTime(dateString);
             string fileName = storage.MergeVoiceRecordingsAndReturnNewFilePath(date);
-            SynoFTPClient client = SynoFTPClient.GetSynoFtpClient();
-            client.LoginSecurely();
-            string mainFolderName = ConfigurationManager.AppSettings["MainFolderName"].ToString();
-            SynoFTPFolder folder = new SynoFTPFolder("/" + mainFolderName);
             folder.UploadFile(fileName);
             client.Logoff();
             storage.DeleteFile(fileName);
+        }
+
+        private void DownloadFileToSavePath(string fileName)
+        {
+            folder.DownloadFile(fileName);
+            client.Logoff();
         }
     }
 }

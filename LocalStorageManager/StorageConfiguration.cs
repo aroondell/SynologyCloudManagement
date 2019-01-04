@@ -11,7 +11,7 @@ namespace LocalStorageManager
 {
     public class StorageConfiguration
     {
-        readonly string fileName = "Configuration.json";
+        readonly static string fileName = "Configuration.json";
         string path;
 
         public StorageConfiguration()
@@ -40,7 +40,7 @@ namespace LocalStorageManager
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string folder = dlg.FileName;
-                StorageJSON jsonConfig = GetStorageJSON();
+                ConfigurationJSON jsonConfig = GetStorageJSON();
                 jsonConfig.SaveFolder = folder;
                 SaveNewConfig(jsonConfig);
                 return folder;
@@ -48,21 +48,29 @@ namespace LocalStorageManager
             return string.Empty;
         }
 
-        private StorageJSON GetStorageJSON()
+        public static string GetSaveDirectory()
+        {
+            string Path = System.IO.Path.Combine(Environment.CurrentDirectory, fileName);
+            string jsonText = File.ReadAllText(Path);
+            ConfigurationJSON config= JsonConvert.DeserializeObject<ConfigurationJSON>(jsonText);
+            return config.SaveFolder;
+        }
+
+        private ConfigurationJSON GetStorageJSON()
         {
             string jsonText = File.ReadAllText(path);
-            StorageJSON json = JsonConvert.DeserializeObject<StorageJSON>(jsonText);
+            ConfigurationJSON json = JsonConvert.DeserializeObject<ConfigurationJSON>(jsonText);
             return json;
         }
 
-        private void SaveNewConfig(StorageJSON json)
+        private void SaveNewConfig(ConfigurationJSON json)
         {
             string jsonText = JsonConvert.SerializeObject(json);
             File.WriteAllText(path, jsonText);
         }
     }
 
-    public class StorageJSON
+    public class ConfigurationJSON
     {
         public string SaveFolder { get; set; }
     }

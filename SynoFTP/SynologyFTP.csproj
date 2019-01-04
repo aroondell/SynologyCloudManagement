@@ -58,5 +58,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LocalStorageManager\LocalStorageManager.csproj">
+      <Project>{6f2800b9-4ac0-4e2a-b1e0-6f00b9651c16}</Project>
+      <Name>LocalStorageManager</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -25,7 +25,7 @@ namespace LocalStorageManager
             totalSize = totalSize / 1000;
             summary.ColumnThree = $"{string.Format("{0:0.00}", totalSize)}kbs";
             summary.ColumnFour = "Upload";
-            summary.ColumnFive = "UploadRecording-" + date.ToString();
+            summary.ColumnFive = "UploadRecording--" + date.ToString();
             return summary;
         }
     }

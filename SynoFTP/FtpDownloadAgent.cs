@@ -17,8 +17,8 @@ namespace SynologyFTP
         public override void TransferFile()
         {
             FtpClient Client = SynoClient.GetFtpClient();
-            string remoteFile = GetNewFileName();
-            Client.DownloadFile(SourcePath, remoteFile, false, FtpVerify.None, progress);
+            string localSave = GetNewFileName();
+            Client.DownloadFile(localSave, SourcePath, false, FtpVerify.None, progress);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace SynologyFTP
             Double size = item.Size;
             size = size / 1000;
             ColumnThree = $"{string.Format("{0:0.00}", size)}kbs";
-            ColumnFive = GetType(item.Name);
+            ColumnFive = $"DownloadFile--{item.Name}";
             Created = item.Created.ToString("dddd, dd MMMM yyyy");
             ColumnTwo = item.Modified.ToString("dddd, dd MMMM yyyy");
             ColumnFour = "Download";

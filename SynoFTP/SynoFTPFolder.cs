@@ -1,7 +1,9 @@
 ﻿using FluentFTP;
+using LocalStorageManager;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +37,14 @@ namespace SynologyFTP
         {
             FtpUploadAgent uploadAgent = new FtpUploadAgent(FolderPath, FilePath);
             uploadAgent.TransferFile();
+        }
+
+        public void DownloadFile(string FileName)
+        {
+            string SaveDirectory = StorageConfiguration.GetSaveDirectory();
+            string sourceFile = FolderPath + '/' + FileName;
+            FtpDownloadAgent downloadAgent = new FtpDownloadAgent(SaveDirectory, sourceFile);
+            downloadAgent.TransferFile();
         }
 
         private void RetrieveFolderContents()

@@ -2,6 +2,7 @@
 using SynologyFTP;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,11 +25,17 @@ namespace SynologyWindows
     {
         ListBox mainList;
         ListBox mainListTitle;
+        TextBlock saveDirectory;
+        StorageConfiguration Configuration;
         public MainWindow()
         {
             InitializeComponent();
             mainList = (ListBox)this.FindName("MainList");
             mainListTitle = (ListBox)this.FindName("MainListTitle");
+            saveDirectory = (TextBlock)this.FindName("SaveDirectory");
+            Configuration = new StorageConfiguration();
+            string currentSave = StorageConfiguration.GetSaveDirectory();
+            saveDirectory.Text = $"Save Folder: {currentSave}";
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -77,6 +84,18 @@ namespace SynologyWindows
         {
             object TagValue = ((Button)sender).Tag;
             DynamicButton button = new DynamicButton((string)TagValue);
+        }
+
+        private void OpenSaveFolderClick(object sender, RoutedEventArgs e)
+        {
+            string currentSave = StorageConfiguration.GetSaveDirectory();
+            Process.Start(currentSave);
+        }
+
+        private void ChangeSaveFolderClick(object sender, RoutedEventArgs e)
+        {
+            string newFolder = Configuration.SelectDirectory();
+            saveDirectory.Text = $"Save Folder: {newFolder}";
         }
     }
 
