@@ -15,8 +15,7 @@ namespace LocalStorageManager
         {
             string DirectoryPath = files.Select(a => a.DirectoryName).FirstOrDefault();
             CreateOutputFileName(date, DirectoryPath);
-            string[] sourceFiles = files.Where(a => a.CreationTime.Date == date.Date)
-                                        .Select(a => a.FullName).ToArray();
+            string[] sourceFiles = files.Select(a => a.FullName).ToArray();
             int length = 0;
             int DataLength = 0;
             HeaderInfo info = new HeaderInfo();

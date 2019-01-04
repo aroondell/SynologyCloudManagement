@@ -14,7 +14,7 @@
         <Button x:Name="UploadButton" Click="UploadButton_Click" Content="Upload Recordings" HorizontalAlignment="Left" Margin="10,112,0,0" VerticalAlignment="Top" Width="186" Height="35" Background="White"/>
         <Button x:Name="BrowseButton" Click="BrowseButton_Click" Content="Browse Server" HorizontalAlignment="Left" Margin="10,147,0,0" VerticalAlignment="Top" Width="186" Height="35" Background="White"/>
         <Button Content="Help" HorizontalAlignment="Left" Margin="10,182,0,0" VerticalAlignment="Top" Width="186" Height="35" Background="White"/>
-        <Label x:Name="ConnectionStatus" Content="NOT CONNECTED" HorizontalAlignment="Left" Margin="10,611,0,0" VerticalAlignment="Top" Width="110" Height="27" Background="#FFFD4040"/>
+        <Label x:Name="ConnectionStatusLabel" HorizontalContentAlignment="Center" Content="NOT CONNECTED" HorizontalAlignment="Left" Margin="10,611,0,0" VerticalAlignment="Top" Width="110" Height="27" Background="#FF58FD40"/>
         <ListBox x:Name="MainListTitle" HorizontalAlignment="Stretch" Height="35" Margin="227,77,0,0" Width="800" VerticalAlignment="Top">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -46,13 +46,13 @@
                         <TextBlock Text="{Binding ColumnOne}" />
                         <TextBlock Grid.Column="1" Text="{Binding ColumnTwo}" />
                         <TextBlock Grid.Column="2" Text="{Binding ColumnThree}" />
-                        <Button Tag="{Binding ColumnFive}" Grid.Column="3" Content="{Binding ColumnFour}" Click="DynamicButtonClick" Background="#FFFD4040"/>
+                        <Button Tag="{Binding ColumnFive}" Grid.Column="3" Content="{Binding ColumnFour}" Click="DynamicButtonClick" Background="#FFF7F7EA"/>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
         <TextBlock x:Name ="SaveDirectory" HorizontalAlignment="Left" Height="65" Margin="10,473,0,0"  Text="TextBox" VerticalAlignment="Top" TextWrapping="WrapWithOverflow" Width="220"/>
-        <Button Content="Open" HorizontalAlignment="Left" Margin="10,548,0,0" VerticalAlignment="Top" Width="75" Click="OpenSaveFolderClick"/>
-        <Button Content="Change" HorizontalAlignment="Left" Margin="90,548,0,0" VerticalAlignment="Top" Width="75" Click="ChangeSaveFolderClick"/>
+        <Button Content="Open" HorizontalAlignment="Left" Margin="10,548,0,0" VerticalAlignment="Top" Width="75" Click="OpenSaveFolderClick" Background="#FFF7F7EA"/>
+        <Button Content="Change" HorizontalAlignment="Left" Margin="90,548,0,0" VerticalAlignment="Top" Width="75" Click="ChangeSaveFolderClick" Background="#FFF7F7EA"/>
     </Grid>
 </Window>

@@ -12,6 +12,7 @@ namespace LocalStorageManager
     {
         private string DrivePath;
         private Dictionary<DateTime, List<FileInfo>> SavedRecordings;
+        private List<RecordPart> RecordParts;
         public USBStorage()
         {
             string usbName = ConfigurationManager.AppSettings["UsbName"].ToString();
@@ -21,24 +22,34 @@ namespace LocalStorageManager
                                 .FirstOrDefault();
         }
 
-        public FileInfo[] GetAllFilesInRecordFolder()
+        public FileInfo[] GetAllViableFilesInRecordFolder()
         {
             string RecordPath = DrivePath + @"\RECORD";
             DirectoryInfo directory = new DirectoryInfo(RecordPath);
-            FileInfo[] files = directory.GetFiles("*.WAV");
-            return files;
+            List<FileInfo> files = directory.GetFiles("*.WAV").ToList();
+            List<FileInfo> filesToIgnore = new List<FileInfo>();
+            StorageConfiguration config = new StorageConfiguration();
+            foreach(FileInfo file in files)
+            {
+                if (!config.HasRecordNotBeenProcessed(file))
+                {
+                    filesToIgnore.Add(file);
+                }
+            }
+            return files.Except(filesToIgnore).ToArray();
         }
 
         public string MergeVoiceRecordingsAndReturnNewFilePath(DateTime date)
         {
             AudioManipulator manipulator = new AudioManipulator();
-            string fileName = manipulator.MergeVoiceRecordingsAndReturnNewFilePath(date);
-            return fileName;
+            dynamic mergeResult = manipulator.MergeVoiceRecordingsAndReturnNewFilePath(date);
+            RecordParts = mergeResult.RecordParts;
+            return mergeResult.FilePath;
         }
 
         public List<UsbFileSummary> GetVoiceRecordsFromStorage()
         {
-            FileInfo[] recordFiles = GetAllFilesInRecordFolder();
+            FileInfo[] recordFiles = GetAllViableFilesInRecordFolder();
             recordFiles = recordFiles.OrderBy(a => a.CreationTime).ToArray();
             SavedRecordings = new Dictionary<DateTime, List<FileInfo>>();
             foreach(FileInfo recordFile in recordFiles)
@@ -59,9 +70,12 @@ namespace LocalStorageManager
             return fileSummaries;
         }
 
-        public void DeleteFile(string filePath)
+        public bool DeleteFileAndLabelPartsAsProcessed(string filePath)
         {
             File.Delete(filePath);
+            StorageConfiguration config = new StorageConfiguration();
+            bool finished = config.StorePartsAsProcessed(RecordParts);
+            return finished;
         }
     }
 }

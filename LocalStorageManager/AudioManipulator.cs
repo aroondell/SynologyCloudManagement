@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,20 +11,39 @@ namespace LocalStorageManager
     public class AudioManipulator
     {
         USBStorage Storage;
-        FileInfo[] AllRecordingFiles;
+        FileInfo[] AllViableRecordingFiles;
 
-        public string MergeVoiceRecordingsAndReturnNewFilePath(DateTime date)
+        public ExpandoObject MergeVoiceRecordingsAndReturnNewFilePath(DateTime date)
         {
             LoadFilesFromRecordingStorage();
             VoiceFile voiceFile = new VoiceFile();
-            string newFilePath = voiceFile.MergeWavFiles(date, AllRecordingFiles);
-            return newFilePath; 
+            FileInfo[] chosenFiles = AllViableRecordingFiles.Where(a => a.CreationTime.Date == date.Date).ToArray();
+            string newFilePath = voiceFile.MergeWavFiles(date, chosenFiles);
+            if (!String.IsNullOrEmpty(newFilePath))
+            {
+                dynamic expeando = new ExpandoObject();
+                List<RecordPart> recordParts = StoreRecordParts(chosenFiles);
+                expeando.FilePath = newFilePath;
+                expeando.RecordParts = recordParts;
+                return expeando;
+            }
+            return null;
         }
 
         private void LoadFilesFromRecordingStorage()
         {
             Storage = new USBStorage();
-            AllRecordingFiles = Storage.GetAllFilesInRecordFolder();
+            AllViableRecordingFiles = Storage.GetAllViableFilesInRecordFolder();
+        }
+
+        private List<RecordPart> StoreRecordParts(FileInfo[] files)
+        {
+            List<RecordPart> recordParts = files.Select(a => new RecordPart
+            {
+                CreationTime = a.CreationTime,
+                Size = a.Length
+            }).ToList();
+            return recordParts;                                   
         }
     }
 }

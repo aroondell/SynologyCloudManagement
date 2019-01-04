@@ -15,37 +15,41 @@ namespace SynologyWindows
         SynoFTPFolder folder;
         SynoFTPClient client;
 
-        public DynamicButton(string TagValue)
+        public bool StartProcessingClick(string TagValue)
         {
             folder = new SynoFTPFolder("/" + mainFolderName);
             client = SynoFTPClient.GetSynoFtpClient();
             client.LoginSecurely();
             string[] stringSeparators = new string[] { "--" };
             string[] commandParts = TagValue.Split(stringSeparators, StringSplitOptions.None);
+            bool result = true;
             if (commandParts[0] == "UploadRecording")
             {
-                MergeRecordingsAndUploadFile(commandParts[1]);
+                result = MergeRecordingsAndUploadFile(commandParts[1]);
             }
             else if (commandParts[0] == "DownloadFile")
             {
-                DownloadFileToSavePath(commandParts[1]);
+                result = DownloadFileToSavePath(commandParts[1]);
             }
+            return result;
         }
 
-        private void MergeRecordingsAndUploadFile(string dateString)
+        private bool MergeRecordingsAndUploadFile(string dateString)
         {
             USBStorage storage = new USBStorage();
             DateTime date = Convert.ToDateTime(dateString);
             string fileName = storage.MergeVoiceRecordingsAndReturnNewFilePath(date);
             folder.UploadFile(fileName);
             client.Logoff();
-            storage.DeleteFile(fileName);
+            bool finished = storage.DeleteFileAndLabelPartsAsProcessed(fileName);
+            return finished;
         }
 
-        private void DownloadFileToSavePath(string fileName)
+        private bool DownloadFileToSavePath(string fileName)
         {
             folder.DownloadFile(fileName);
             client.Logoff();
+            return true;
         }
     }
 }

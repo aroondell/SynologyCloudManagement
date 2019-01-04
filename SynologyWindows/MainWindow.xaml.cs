@@ -36,6 +36,8 @@ namespace SynologyWindows
             Configuration = new StorageConfiguration();
             string currentSave = StorageConfiguration.GetSaveDirectory();
             saveDirectory.Text = $"Save Folder: {currentSave}";
+            Label connectionStatus = (Label)this.FindName("ConnectionStatusLabel");
+            ConnectionStatus status = new ConnectionStatus(connectionStatus);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -45,24 +47,35 @@ namespace SynologyWindows
 
         private void UploadButton_Click(object sender, RoutedEventArgs e)
         {
-            MainListTitleStruct title = new MainListTitleStruct
-            {
-                Title1 = "Date",
-                Title2 = "Recordings",
-                Title3 = "Size",
-                Title4 = ""
-            };
-            List<MainListTitleStruct> titles = new List<MainListTitleStruct>
-            {
-                title
-            };
-            mainListTitle.ItemsSource = titles;
-            USBStorage storage = new USBStorage();
-            List<UsbFileSummary> fileSummaries = storage.GetVoiceRecordsFromStorage();
-            mainList.ItemsSource = fileSummaries;
+            RefreshUploadWindow();
         }
 
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshBrowseWindow();
+        }
+
+        private void DynamicButtonClick(object sender, RoutedEventArgs e)
+        {
+            object TagValue = ((Button)sender).Tag;
+            DynamicButton button = new DynamicButton();
+            bool finished = button.StartProcessingClick((string)TagValue);
+            RefreshBrowseWindow();
+        }
+
+        private void OpenSaveFolderClick(object sender, RoutedEventArgs e)
+        {
+            string currentSave = StorageConfiguration.GetSaveDirectory();
+            Process.Start(currentSave);
+        }
+
+        private void ChangeSaveFolderClick(object sender, RoutedEventArgs e)
+        {
+            string newFolder = Configuration.SelectDirectory();
+            saveDirectory.Text = $"Save Folder: {newFolder}";
+        }
+
+        private void RefreshBrowseWindow()
         {
             MainListTitleStruct title = new MainListTitleStruct
             {
@@ -80,22 +93,23 @@ namespace SynologyWindows
             mainList.ItemsSource = fileSummaries;
         }
 
-        private void DynamicButtonClick(object sender, RoutedEventArgs e)
+        private void RefreshUploadWindow()
         {
-            object TagValue = ((Button)sender).Tag;
-            DynamicButton button = new DynamicButton((string)TagValue);
-        }
-
-        private void OpenSaveFolderClick(object sender, RoutedEventArgs e)
-        {
-            string currentSave = StorageConfiguration.GetSaveDirectory();
-            Process.Start(currentSave);
-        }
-
-        private void ChangeSaveFolderClick(object sender, RoutedEventArgs e)
-        {
-            string newFolder = Configuration.SelectDirectory();
-            saveDirectory.Text = $"Save Folder: {newFolder}";
+            MainListTitleStruct title = new MainListTitleStruct
+            {
+                Title1 = "Date",
+                Title2 = "Recordings",
+                Title3 = "Size",
+                Title4 = ""
+            };
+            List<MainListTitleStruct> titles = new List<MainListTitleStruct>
+            {
+                title
+            };
+            mainListTitle.ItemsSource = titles;
+            USBStorage storage = new USBStorage();
+            List<UsbFileSummary> fileSummaries = storage.GetVoiceRecordsFromStorage();
+            mainList.ItemsSource = fileSummaries;
         }
     }
 

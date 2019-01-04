@@ -13,10 +13,12 @@ namespace LocalStorageManager
     {
         readonly static string fileName = "Configuration.json";
         string path;
+        ConfigurationJSON config;
 
         public StorageConfiguration()
         {
             path = Path.Combine(Environment.CurrentDirectory, fileName);
+            config = GetStorageJSON();
         }
 
         public string SelectDirectory()
@@ -40,12 +42,29 @@ namespace LocalStorageManager
             if (dlg.ShowDialog() == CommonFileDialogResult.Ok)
             {
                 string folder = dlg.FileName;
-                ConfigurationJSON jsonConfig = GetStorageJSON();
-                jsonConfig.SaveFolder = folder;
-                SaveNewConfig(jsonConfig);
+                config.SaveFolder = folder;
+                SaveNewConfig();
                 return folder;
             }
             return string.Empty;
+        }
+
+        public bool HasRecordNotBeenProcessed(FileInfo fileInfo)
+        {
+            RecordPart record = new RecordPart
+            {
+                CreationTime = fileInfo.CreationTime,
+                Size = fileInfo.Length
+            };
+            List<RecordPart> records = config.RecordsProcessed;
+            if (records != null)
+            {
+                RecordPart recordCheck = config.RecordsProcessed
+                            .Where(a => a.CreationTime == record.CreationTime && a.Size == record.Size)
+                            .FirstOrDefault();
+                return recordCheck == null;
+            }
+            return true;
         }
 
         public static string GetSaveDirectory()
@@ -56,6 +75,20 @@ namespace LocalStorageManager
             return config.SaveFolder;
         }
 
+        public bool StorePartsAsProcessed(List<RecordPart> recordParts)
+        {
+            if (config.RecordsProcessed == null)
+            {
+                config.RecordsProcessed = recordParts;
+            }
+            else
+            {
+                config.RecordsProcessed.AddRange(recordParts);
+            }
+            SaveNewConfig();
+            return true;
+        }
+
         private ConfigurationJSON GetStorageJSON()
         {
             string jsonText = File.ReadAllText(path);
@@ -63,9 +96,9 @@ namespace LocalStorageManager
             return json;
         }
 
-        private void SaveNewConfig(ConfigurationJSON json)
+        private void SaveNewConfig()
         {
-            string jsonText = JsonConvert.SerializeObject(json);
+            string jsonText = JsonConvert.SerializeObject(config);
             File.WriteAllText(path, jsonText);
         }
     }
@@ -73,5 +106,12 @@ namespace LocalStorageManager
     public class ConfigurationJSON
     {
         public string SaveFolder { get; set; }
+        public List<RecordPart> RecordsProcessed { get; set; }
+    }
+
+    public class RecordPart
+    {
+        public DateTime CreationTime { get; set; }
+        public long Size { get; set; }
     }
 }
